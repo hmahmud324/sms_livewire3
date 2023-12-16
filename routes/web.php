@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('students',StudentController::class);
+    Route::resource('students');
 
     Route::get('students/{student/edit}',Edit::class)->name('students.edit');
 });
