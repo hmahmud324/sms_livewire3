@@ -8,6 +8,10 @@ class StudentController extends Controller
 {
     public function index()
     {
-        return view('students.index');
+        return view('student.index');
+    }
+     public function create()
+    {
+        return view('student.create');
     }
 }

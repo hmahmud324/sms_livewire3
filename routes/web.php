@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
-
+use App\Livewire\Student\Edit;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('students',StudentController::class);
+
+    Route::get('students/{student/edit}',Edit::class)->name('students.edit');
 });
 
 require __DIR__.'/auth.php';
