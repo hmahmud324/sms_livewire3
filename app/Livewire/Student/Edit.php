@@ -2,46 +2,58 @@
 
 namespace App\Livewire\Student;
 
-
-
-use App\Models\Classes;
+use App\Livewire\Forms\UpdateStudent;
 use App\Models\Section;
 use App\Models\Student;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Livewire\Attributes\Rule;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Layout;
 
 class Edit extends Component
 {
+    use WithFileUploads;
 
-    use InteractsWithMedia;
+    public Student $student;
 
-    #[Rule('required|min:3')]
-    public $name;
-    #[Rule('required|email')]
-    public $email;
-    #[Rule('required|image')]
-    public $image;
+    public UpdateStudent $form;
+
     #[Rule('required')]
     public $class_id;
-    #[Rule('required')]
-    public $section_id;
-
 
     public $sections = [];
 
     public function mount()
     {
-        $this->fill($this->student->only('name','email','class_id','section_id'));
-        $this->sections = Section::where('class_id',$this->student->class_id)->get();
+        $this->form->setStudent($this->student);
+
+        $this->fill(
+            $this->student->only('class_id'),
+        );
+
+        $this->sections = Section::where('class_id', $this->student->class_id)->get();
     }
 
     #[Layout('layouts.app')]
     public function render()
     {
-        return view('livewire.student.edit',[
-            'classes' => Classes::all()
+        return view('livewire.student.edit', [
+            'classes' => \App\Models\Classes::all(),
         ]);
+    }
+
+    public function updatedClassId($value)
+    {
+        $this->sections = Section::where('class_id', $value)->get();
+    }
+
+    public function update()
+    {
+        $this->validate();
+
+        $this->form->update($this->class_id);
+
+        return redirect()->route('students.index')
+            ->with('status', 'Student details updated successfully.');
     }
 }

@@ -19,7 +19,6 @@
                         </a>
                     </div>
                 </div>
-
                 @livewire('student.index')
             </div>
         </div>

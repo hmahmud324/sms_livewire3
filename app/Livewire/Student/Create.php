@@ -2,56 +2,42 @@
 
 namespace App\Livewire\Student;
 
-use App\Models\Classes;
 use App\Models\Section;
-use App\Models\Student;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Livewire\Attributes\Rule;
+use Livewire\WithFileUploads;
+use App\Livewire\Forms\StoreStudent;
 
 class Create extends Component
 {
-    use InteractsWithMedia;
+    use WithFileUploads;
 
-    #[Rule('required|min:3')]
-    public $name;
-    #[Rule('required|email')]
-    public $email;
-    #[Rule('required|image')]
-    public $image;
+    public StoreStudent $form;
+
     #[Rule('required')]
     public $class_id;
-    #[Rule('required')]
-    public $section_id;
-
 
     public $sections = [];
 
     public function render()
     {
-        return view('livewire.student.create',[
-            'classes' => Classes::all()
+        return view('livewire.student.create', [
+            'classes' => \App\Models\Classes::all(),
         ]);
     }
 
     public function save()
     {
         $this->validate();
-        $student = Student::create(
-            $this->only(['title','eamil','image','class_id','section_id'])
-        );   
 
-        $student 
-        ->addMedia($this->image)
-        ->toMediaCollection();
+        $this->form->store(class_id: $this->class_id);
 
         return redirect(route('students.index'))
-                ->with('status','Student Succesfully Created');
+            ->with('status', 'Student successfully created.');
     }
-
 
     public function updatedClassId($value)
     {
-        $this->sections = Section::where('class_id',$value)->get();
+        $this->sections = Section::where('class_id', $value)->get();
     }
 }
